@@ -5,7 +5,7 @@ import pytube as pt
 from transformers import pipeline
 from huggingface_hub import model_info
 
-MODEL_NAME = "openai/whisper-large-v2"
+MODEL_NAME = "openai/whisper-tiny"
 
 device = 0 if torch.cuda.is_available() else "cpu"
 
@@ -17,7 +17,12 @@ pipe = pipeline(
 )
 
 
-def transcribe(microphone, file_upload):
+all_special_ids = pipe.tokenizer.all_special_ids
+transcribe_token_id = all_special_ids[-5]
+translate_token_id = all_special_ids[-6]
+
+
+def transcribe(microphone, file_upload, task):
     warn_output = ""
     if (microphone is not None) and (file_upload is not None):
         warn_output = (
@@ -29,6 +34,8 @@ def transcribe(microphone, file_upload):
         return "ERROR: You have to either use the microphone or upload an audio file"
 
     file = microphone if microphone is not None else file_upload
+
+    pipe.model.config.forced_decoder_ids = [[2, translate_token_id if do_translate else transcribe_token_id]]
 
     text = pipe(file)["text"]
 
@@ -44,11 +51,13 @@ def _return_yt_html_embed(yt_url):
     return HTML_str
 
 
-def yt_transcribe(yt_url):
+def yt_transcribe(yt_url, do_translate):
     yt = pt.YouTube(yt_url)
     html_embed_str = _return_yt_html_embed(yt_url)
     stream = yt.streams.filter(only_audio=True)[0]
     stream.download(filename="audio.mp3")
+
+    pipe.model.config.forced_decoder_ids = [[2, translate_token_id if do_translate else transcribe_token_id]]
 
     text = pipe("audio.mp3")["text"]
 
@@ -62,6 +71,7 @@ mf_transcribe = gr.Interface(
     inputs=[
         gr.inputs.Audio(source="microphone", type="filepath", optional=True),
         gr.inputs.Audio(source="upload", type="filepath", optional=True),
+        gr.Checkbox(label="Translate?", value=False),
     ],
     outputs="text",
     layout="horizontal",
@@ -77,7 +87,7 @@ mf_transcribe = gr.Interface(
 
 yt_transcribe = gr.Interface(
     fn=yt_transcribe,
-    inputs=[gr.inputs.Textbox(lines=1, placeholder="Paste the URL to a YouTube video here", label="YouTube URL")],
+    inputs=[gr.inputs.Textbox(lines=1, placeholder="Paste the URL to a YouTube video here", label="YouTube URL"), gr.Checkbox(label="Translate?", value=False)],
     outputs=["html", "text"],
     layout="horizontal",
     theme="huggingface",
