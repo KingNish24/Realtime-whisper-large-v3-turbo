@@ -3,7 +3,6 @@ import torch
 import gradio as gr
 import pytube as pt
 from transformers import pipeline
-from huggingface_hub import model_info
 
 MODEL_NAME = "openai/whisper-tiny"
 
@@ -22,7 +21,7 @@ transcribe_token_id = all_special_ids[-5]
 translate_token_id = all_special_ids[-6]
 
 
-def transcribe(microphone, file_upload, task):
+def transcribe(microphone, file_upload, do_translate):
     warn_output = ""
     if (microphone is not None) and (file_upload is not None):
         warn_output = (
@@ -103,4 +102,4 @@ yt_transcribe = gr.Interface(
 with demo:
     gr.TabbedInterface([mf_transcribe, yt_transcribe], ["Transcribe Audio", "Transcribe YouTube"])
 
-demo.launch(enable_queue=True)
+demo.launch(enable_queue=True, share=True)
