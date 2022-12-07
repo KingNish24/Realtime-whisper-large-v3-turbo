@@ -75,9 +75,9 @@ mf_transcribe = gr.Interface(
     outputs="text",
     layout="horizontal",
     theme="huggingface",
-    title="Whisper Demo: Transcribe Audio",
+    title="Whisper Large V2: Transcribe Audio",
     description=(
-        "Transcribe long-form microphone or audio inputs with the click of a button! Demo uses the the fine-tuned"
+        "Transcribe long-form microphone or audio inputs with the click of a button! Demo uses the"
         f" checkpoint [{MODEL_NAME}](https://huggingface.co/{MODEL_NAME}) and 🤗 Transformers to transcribe audio files"
         " of arbitrary length."
     ),
@@ -93,10 +93,10 @@ yt_transcribe = gr.Interface(
     outputs=["html", "text"],
     layout="horizontal",
     theme="huggingface",
-    title="Whisper Demo: Transcribe YouTube",
+    title="Whisper Large V2: Transcribe YouTube",
     description=(
-        "Transcribe long-form YouTube videos with the click of a button! Demo uses the checkpoint:"
-        f" [{MODEL_NAME}](https://huggingface.co/{MODEL_NAME}) and 🤗 Transformers to transcribe audio files of"
+        "Transcribe long-form YouTube videos with the click of a button! Demo uses the checkpoint"
+        f" [{MODEL_NAME}](https://huggingface.co/{MODEL_NAME}) and 🤗 Transformers to transcribe video files of"
         " arbitrary length."
     ),
     allow_flagging="never",
