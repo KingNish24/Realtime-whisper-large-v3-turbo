@@ -83,7 +83,7 @@ yt_transcribe = gr.Interface(
     theme="huggingface",
     title="Whisper Demo: Transcribe YouTube",
     description=(
-        "Transcribe long-form YouTube videos with the click of a button! Demo uses the the fine-tuned checkpoint:"
+        "Transcribe long-form YouTube videos with the click of a button! Demo uses the checkpoint:"
         f" [{MODEL_NAME}](https://huggingface.co/{MODEL_NAME}) and 🤗 Transformers to transcribe audio files of"
         " arbitrary length."
     ),
