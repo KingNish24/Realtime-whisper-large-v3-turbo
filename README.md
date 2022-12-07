@@ -1,5 +1,5 @@
 ---
-title: Whisper Demo
+title: Whisper Large V2
 emoji: 🤫
 colorFrom: indigo
 colorTo: red
@@ -9,7 +9,6 @@ app_file: app.py
 pinned: false
 tags:
 - whisper-event
-duplicated_from: whisper-event/whisper-demo
 ---
 
 Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
