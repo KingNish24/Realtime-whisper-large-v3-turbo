@@ -5,8 +5,7 @@ import pytube as pt
 from transformers import pipeline
 from huggingface_hub import model_info
 
-MODEL_NAME = "openai/whisper-small" #this always needs to stay in line 8 :D sorry for the hackiness
-lang = "en"
+MODEL_NAME = "openai/whisper-large-v2"
 
 device = 0 if torch.cuda.is_available() else "cpu"
 
@@ -17,7 +16,6 @@ pipe = pipeline(
     device=device,
 )
 
-pipe.model.config.forced_decoder_ids = pipe.tokenizer.get_decoder_prompt_ids(language=lang, task="transcribe")
 
 def transcribe(microphone, file_upload):
     warn_output = ""
