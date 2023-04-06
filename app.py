@@ -5,6 +5,7 @@ import pytube as pt
 from transformers import pipeline
 
 MODEL_NAME = "openai/whisper-large-v2"
+BATCH_SIZE = 8
 
 device = 0 if torch.cuda.is_available() else "cpu"
 
@@ -36,7 +37,7 @@ def transcribe(microphone, file_upload, task):
 
     pipe.model.config.forced_decoder_ids = [[2, transcribe_token_id if task=="transcribe" else translate_token_id]]
 
-    text = pipe(file)["text"]
+    text = pipe(file, batch_size=BATCH_SIZE)["text"]
 
     return warn_output + text
 
@@ -58,7 +59,7 @@ def yt_transcribe(yt_url, task):
 
     pipe.model.config.forced_decoder_ids = [[2, transcribe_token_id if task=="transcribe" else translate_token_id]]
 
-    text = pipe("audio.mp3")["text"]
+    text = pipe("audio.mp3", batch_size=BATCH_SIZE)["text"]
 
     return html_embed_str, text
 
