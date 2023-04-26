@@ -6,6 +6,8 @@ from transformers import pipeline
 
 MODEL_NAME = "openai/whisper-large-v2"
 BATCH_SIZE = 8
+FILE_LIMIT_MB = 1000
+YT_ATTEMPT_LIMIT = 3
 
 device = 0 if torch.cuda.is_available() else "cpu"
 
@@ -31,7 +33,13 @@ def transcribe(microphone, file_upload, task):
         )
 
     elif (microphone is None) and (file_upload is None):
-        return "ERROR: You have to either use the microphone or upload an audio file"
+        raise gr.Error("You have to either use the microphone or upload an audio file")
+
+    file_size_mb = os.stat(inputs).st_size / (1024 * 1024)
+    if file_size_mb > FILE_LIMIT_MB:
+        raise gr.Error(
+                f"File size exceeds file size limit. Got file of size {file_size_mb:.2f}MB for a limit of {FILE_LIMIT_MB}MB."
+        )
 
     file = microphone if microphone is not None else file_upload
 
@@ -51,11 +59,20 @@ def _return_yt_html_embed(yt_url):
     return HTML_str
 
 
-def yt_transcribe(yt_url, task):
+def yt_transcribe(yt_url, task, max_filesize=75.0):
     yt = pt.YouTube(yt_url)
     html_embed_str = _return_yt_html_embed(yt_url)
-    stream = yt.streams.filter(only_audio=True)[0]
-    stream.download(filename="audio.mp3")
+    for attempt in range(YT_ATTEMPT_LIMIT):
+        try:
+            yt = pytube.YouTube(yt_url)
+            stream = yt.streams.filter(only_audio=True)[0]
+            break
+        except KeyError:
+            if attempt + 1 == YT_ATTEMPT_LIMIT:
+                raise gr.Error("An error occurred while loading the YouTube video. Please try again.")
+
+    if stream.filesize_mb > max_filesize:
+        raise gr.Error(f"Maximum YouTube file size is {max_filesize}MB, got {stream.filesize_mb:.2f}MB.")
 
     pipe.model.config.forced_decoder_ids = [[2, transcribe_token_id if task=="transcribe" else translate_token_id]]
 
