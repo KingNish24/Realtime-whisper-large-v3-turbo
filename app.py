@@ -3,11 +3,14 @@ import torch
 import gradio as gr
 import pytube as pt
 from transformers import pipeline
+from transformers.pipelines.audio_utils import ffmpeg_read
+
+import tempfile
 
 MODEL_NAME = "openai/whisper-large-v2"
 BATCH_SIZE = 8
 FILE_LIMIT_MB = 1000
-YT_ATTEMPT_LIMIT = 3
+YT_LENGTH_LIMIT_S = 3600  # limit to 1 hour YouTube files
 
 device = 0 if torch.cuda.is_available() else "cpu"
 
@@ -17,11 +20,6 @@ pipe = pipeline(
     chunk_length_s=30,
     device=device,
 )
-
-
-all_special_ids = pipe.tokenizer.all_special_ids
-transcribe_token_id = all_special_ids[-5]
-translate_token_id = all_special_ids[-6]
 
 
 def transcribe(microphone, file_upload, task):
@@ -43,9 +41,7 @@ def transcribe(microphone, file_upload, task):
 
     file = microphone if microphone is not None else file_upload
 
-    pipe.model.config.forced_decoder_ids = [[2, transcribe_token_id if task=="transcribe" else translate_token_id]]
-
-    text = pipe(file, batch_size=BATCH_SIZE)["text"]
+    text = pipe(file, batch_size=BATCH_SIZE, generate_kwargs={"task": task})["text"]
 
     return warn_output + text
 
@@ -58,25 +54,46 @@ def _return_yt_html_embed(yt_url):
     )
     return HTML_str
 
+def download_yt_audio(yt_url, filename):
+    info_loader = youtube_dl.YoutubeDL()
+    try:
+        info = info_loader.extract_info(yt_url, download=False)
+    except youtube_dl.utils.DownloadError as err:
+        raise gr.Error(str(err))
+    file_length = info["duration_string"]
+    file_h_m_s = file_length.split(":")
+    file_h_m_s = [int(sub_length) for sub_length in file_h_m_s]
+    if len(file_h_m_s) == 1:
+        file_h_m_s.insert(0, 0)
+    if len(file_h_m_s) == 2:
+        file_h_m_s.insert(0, 0)
+    file_length_s = file_h_m_s[0] * 3600 + file_h_m_s[1] * 60 + file_h_m_s[2]
+    if file_length_s > YT_LENGTH_LIMIT_S:
+        yt_length_limit_hms = time.strftime("%HH:%MM:%SS", time.gmtime(YT_LENGTH_LIMIT_S))
+        file_length_hms = time.strftime("%HH:%MM:%SS", time.gmtime(file_length_s))
+        raise gr.Error(f"Maximum YouTube length is {yt_length_limit_hms}, got {file_length_hms} YouTube video.")
+    ydl_opts = {"outtmpl": filename, "format": "worstvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best"}
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        try:
+            ydl.download([yt_url])
+        except youtube_dl.utils.ExtractorError as err:
+            raise gr.Error(str(err))
+
 
 def yt_transcribe(yt_url, task, max_filesize=75.0):
     yt = pt.YouTube(yt_url)
     html_embed_str = _return_yt_html_embed(yt_url)
-    for attempt in range(YT_ATTEMPT_LIMIT):
-        try:
-            yt = pytube.YouTube(yt_url)
-            stream = yt.streams.filter(only_audio=True)[0]
-            break
-        except KeyError:
-            if attempt + 1 == YT_ATTEMPT_LIMIT:
-                raise gr.Error("An error occurred while loading the YouTube video. Please try again.")
 
-    if stream.filesize_mb > max_filesize:
-        raise gr.Error(f"Maximum YouTube file size is {max_filesize}MB, got {stream.filesize_mb:.2f}MB.")
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        filepath = os.path.join(tmpdirname, "video.mp4")
+        download_yt_audio(yt_url, filepath)
+        with open(filepath, "rb") as f:
+            inputs = f.read()
 
-    pipe.model.config.forced_decoder_ids = [[2, transcribe_token_id if task=="transcribe" else translate_token_id]]
+    inputs = ffmpeg_read(inputs, pipeline.feature_extractor.sampling_rate)
+    inputs = {"array": inputs, "sampling_rate": pipeline.feature_extractor.sampling_rate}
 
-    text = pipe("audio.mp3", batch_size=BATCH_SIZE)["text"]
+    text = pipe(inputs, batch_size=BATCH_SIZE, generate_kwargs={"task": task})["text"]
 
     return html_embed_str, text
 
