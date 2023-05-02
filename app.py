@@ -1,7 +1,6 @@
 import torch
 
 import gradio as gr
-import pytube as pt
 from transformers import pipeline
 from transformers.pipelines.audio_utils import ffmpeg_read
 
