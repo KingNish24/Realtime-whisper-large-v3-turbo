@@ -1,6 +1,7 @@
 import torch
 
 import gradio as gr
+import yt_dlp as youtube_dl
 from transformers import pipeline
 from transformers.pipelines.audio_utils import ffmpeg_read
 
