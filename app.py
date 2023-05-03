@@ -6,6 +6,7 @@ from transformers import pipeline
 from transformers.pipelines.audio_utils import ffmpeg_read
 
 import tempfile
+import os
 
 MODEL_NAME = "openai/whisper-large-v2"
 BATCH_SIZE = 8
