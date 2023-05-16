@@ -82,7 +82,6 @@ def download_yt_audio(yt_url, filename):
 
 
 def yt_transcribe(yt_url, task, max_filesize=75.0):
-    yt = pt.YouTube(yt_url)
     html_embed_str = _return_yt_html_embed(yt_url)
 
     with tempfile.TemporaryDirectory() as tmpdirname:
