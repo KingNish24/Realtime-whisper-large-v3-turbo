@@ -90,8 +90,8 @@ def yt_transcribe(yt_url, task, max_filesize=75.0):
         with open(filepath, "rb") as f:
             inputs = f.read()
 
-    inputs = ffmpeg_read(inputs, pipeline.feature_extractor.sampling_rate)
-    inputs = {"array": inputs, "sampling_rate": pipeline.feature_extractor.sampling_rate}
+    inputs = ffmpeg_read(inputs, pipe.feature_extractor.sampling_rate)
+    inputs = {"array": inputs, "sampling_rate": pipe.feature_extractor.sampling_rate}
 
     text = pipe(inputs, batch_size=BATCH_SIZE, generate_kwargs={"task": task})["text"]
 
