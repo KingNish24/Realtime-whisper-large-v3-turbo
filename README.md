@@ -1,5 +1,5 @@
 ---
-title: Whisper Large V2
+title: Whisper Large V3
 emoji: 🤫
 colorFrom: indigo
 colorTo: red
