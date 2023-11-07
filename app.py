@@ -8,7 +8,7 @@ from transformers.pipelines.audio_utils import ffmpeg_read
 import tempfile
 import os
 
-MODEL_NAME = "sanchit-gandhi/whisper-large-v3"
+MODEL_NAME = "openai/whisper-large-v3"
 BATCH_SIZE = 8
 FILE_LIMIT_MB = 1000
 YT_LENGTH_LIMIT_S = 3600  # limit to 1 hour YouTube files
@@ -117,7 +117,7 @@ file_transcribe = gr.Interface(
     outputs="text",
     layout="horizontal",
     theme="huggingface",
-    title="Whisper Large V2: Transcribe Audio",
+    title="Whisper Large V3: Transcribe Audio",
     description=(
         "Transcribe long-form microphone or audio inputs with the click of a button! Demo uses the"
         f" checkpoint [{MODEL_NAME}](https://huggingface.co/{MODEL_NAME}) and 🤗 Transformers to transcribe audio files"
@@ -135,7 +135,7 @@ yt_transcribe = gr.Interface(
     outputs=["html", "text"],
     layout="horizontal",
     theme="huggingface",
-    title="Whisper Large V2: Transcribe YouTube",
+    title="Whisper Large V3: Transcribe YouTube",
     description=(
         "Transcribe long-form YouTube videos with the click of a button! Demo uses the checkpoint"
         f" [{MODEL_NAME}](https://huggingface.co/{MODEL_NAME}) and 🤗 Transformers to transcribe video files of"
