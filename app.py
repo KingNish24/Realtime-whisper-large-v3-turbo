@@ -99,7 +99,7 @@ mf_transcribe = gr.Interface(
     outputs="text",
     layout="horizontal",
     theme="huggingface",
-    title="Whisper Large V2: Transcribe Audio",
+    title="Whisper Large V3: Transcribe Audio",
     description=(
         "Transcribe long-form microphone or audio inputs with the click of a button! Demo uses the"
         f" checkpoint [{MODEL_NAME}](https://huggingface.co/{MODEL_NAME}) and 🤗 Transformers to transcribe audio files"
