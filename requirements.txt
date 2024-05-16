@@ -1,3 +1,2 @@
-git+https://github.com/huggingface/transformers
-torch
+transformers
 yt-dlp
