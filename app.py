@@ -1,3 +1,4 @@
+import spaces
 import torch
 
 import gradio as gr
@@ -23,6 +24,7 @@ pipe = pipeline(
 )
 
 
+@spaces.GPU
 def transcribe(inputs, task):
     if inputs is None:
         raise gr.Error("No audio file submitted! Please upload or record an audio file before submitting your request.")
@@ -70,7 +72,7 @@ def download_yt_audio(yt_url, filename):
         except youtube_dl.utils.ExtractorError as err:
             raise gr.Error(str(err))
 
-
+@spaces.GPU
 def yt_transcribe(yt_url, task, max_filesize=75.0):
     html_embed_str = _return_yt_html_embed(yt_url)
 
