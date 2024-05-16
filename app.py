@@ -143,5 +143,5 @@ yt_transcribe = gr.Interface(
 with demo:
     gr.TabbedInterface([mf_transcribe, file_transcribe, yt_transcribe], ["Microphone", "Audio file", "YouTube"])
 
-demo.launch(enable_queue=True)
+demo.queue().launch()
 
