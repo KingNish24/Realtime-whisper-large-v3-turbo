@@ -95,7 +95,7 @@ demo = gr.Blocks()
 mf_transcribe = gr.Interface(
     fn=transcribe,
     inputs=[
-        gr.inputs.Audio(sources="microphone", type="filepath),
+        gr.inputs.Audio(sources="microphone", type="filepath"),
         gr.inputs.Radio(["transcribe", "translate"], label="Task", value="transcribe"),
     ],
     outputs="text",
