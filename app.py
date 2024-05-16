@@ -95,8 +95,8 @@ demo = gr.Blocks()
 mf_transcribe = gr.Interface(
     fn=transcribe,
     inputs=[
-        gr.inputs.Audio(sources="microphone", type="filepath"),
-        gr.inputs.Radio(["transcribe", "translate"], label="Task", value="transcribe"),
+        gr.Audio(sources="microphone", type="filepath"),
+        gr.Radio(["transcribe", "translate"], label="Task", value="transcribe"),
     ],
     outputs="text",
     layout="horizontal",
@@ -113,8 +113,8 @@ mf_transcribe = gr.Interface(
 file_transcribe = gr.Interface(
     fn=transcribe,
     inputs=[
-        gr.inputs.Audio(sources="upload", type="filepath", label="Audio file"),
-        gr.inputs.Radio(["transcribe", "translate"], label="Task", value="transcribe"),
+        gr.Audio(sources="upload", type="filepath", label="Audio file"),
+        gr.Radio(["transcribe", "translate"], label="Task", value="transcribe"),
     ],
     outputs="text",
     layout="horizontal",
@@ -131,8 +131,8 @@ file_transcribe = gr.Interface(
 yt_transcribe = gr.Interface(
     fn=yt_transcribe,
     inputs=[
-        gr.inputs.Textbox(lines=1, placeholder="Paste the URL to a YouTube video here", label="YouTube URL"),
-        gr.inputs.Radio(["transcribe", "translate"], label="Task", value="transcribe")
+        gr.Textbox(lines=1, placeholder="Paste the URL to a YouTube video here", label="YouTube URL"),
+        gr.Radio(["transcribe", "translate"], label="Task", value="transcribe")
     ],
     outputs=["html", "text"],
     layout="horizontal",
