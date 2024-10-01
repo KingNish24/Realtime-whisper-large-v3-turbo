@@ -43,7 +43,7 @@ def transcribe(inputs, previous_transcription):
 
         end_time = time.time()
         latency = end_time - start_time
-        return previous_transcription, str(latency:.2f)
+        return previous_transcription, str(latency)
     except Exception as e:
         print(f"Error during Transcription: {e}")
         return previous_transcription, "Error"
