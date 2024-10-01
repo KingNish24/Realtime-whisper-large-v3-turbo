@@ -2,7 +2,6 @@ import spaces
 import torch
 import gradio as gr
 from transformers import pipeline
-from transformers.pipelines.audio_utils import ffmpeg_read
 import tempfile
 import os
 
@@ -27,6 +26,6 @@ with gr.Blocks() as demo:
         input_audio_microphone = gr.Audio(streaming=True)
         output = gr.Textbox(label="Transcription", value="")
         
-        input_audio_microphone.stream(transcribe, [input_audio_microphone, output], [output], time_limit=45, stream_every=2, concurrency_limit=None)
+        input_audio_microphone.stream(transcribe, [input_audio_microphone, output], [output], time_limit=45, stream_every=3, concurrency_limit=None)
 
 demo.queue().launch()
