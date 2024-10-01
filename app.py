@@ -51,4 +51,4 @@ with gr.Blocks() as demo:
 
         input_audio_microphone.stream(transcribe, [input_audio_microphone, output], [output], time_limit=45, stream_every=2, concurrency_limit=None)
 
-demo.queue(). launch()
+demo.launch()
