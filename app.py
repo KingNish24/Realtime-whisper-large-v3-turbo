@@ -5,6 +5,7 @@ from transformers import pipeline
 import tempfile
 import os
 import uuid
+import scipy.io.wavfile
 
 MODEL_NAME = "ylacombe/whisper-large-v3-turbo"
 BATCH_SIZE = 8
@@ -24,9 +25,11 @@ def transcribe(inputs, previous_transcription):
         filename = f"{uuid.uuid4().hex}.wav"
         filepath = os.path.join(tempfile.gettempdir(), filename)
 
+        # Extract sample rate and audio data from the tuple
+        sample_rate, audio_data = inputs
+
         # Save the audio data to the temporary file
-        with open(filepath, "wb") as f:
-            f.write(inputs[1])
+        scipy.io.wavfile.write(filepath, sample_rate, audio_data)
 
         previous_transcription += pipe(filepath, batch_size=BATCH_SIZE, generate_kwargs={"task": "transcribe"}, return_timestamps=True)["text"]
 
