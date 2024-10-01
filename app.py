@@ -43,9 +43,10 @@ def transcribe(inputs, previous_transcription):
 
 with gr.Blocks() as demo:
     with gr.Column():
+        gr.Markdown(f"# Realtime Whisper Large V3 Turbo: Transcribe Audio\n Transcribe long-form microphone or audio inputs in Realtime Demo uses the checkpoint [{MODEL_NAME}](https://huggingface.co/{MODEL_NAME}) and 🤗 Transformers")
         input_audio_microphone = gr.Audio(streaming=True)
         output = gr.Textbox(label="Transcription", value="")
 
-        input_audio_microphone.stream(transcribe, [input_audio_microphone, output], [output], time_limit=45, stream_every=2, concurrency_limit=None)
+        input_audio_microphone.stream(transcribe, [input_audio_microphone, output], [output], time_limit=45, stream_every=1, concurrency_limit=None)
 
 demo.queue().launch()
