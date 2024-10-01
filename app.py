@@ -19,15 +19,15 @@ pipe = pipeline(
 
 @spaces.GPU
 def transcribe(inputs, previous_transcription):
-    text = pipe(inputs, batch_size=BATCH_SIZE, generate_kwargs={"task": "transcribe"}, return_timestamps=True)["text"]
+    text = pipe(inputs[1], batch_size=BATCH_SIZE, generate_kwargs={"task": "transcribe"}, return_timestamps=True)["text"]
     if previous_transcription:
         text = previous_transcription + text
     return text
 
 with gr.Blocks() as demo:
     with gr.Column():
-        input_audio_microphone = gr.Audio(streaming=True, type="numpy")
-        output = gr.Textbox("Transcription")
+        input_audio_microphone = gr.Audio(streaming=True)
+        output = gr.Textbox(label"Transcription")
         
         input_audio_microphone.stream(transcribe, [input_audio_microphone, output], [output], time_limit=15, stream_every=1, concurrency_limit=None)
 
