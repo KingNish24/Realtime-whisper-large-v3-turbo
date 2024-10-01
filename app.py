@@ -24,14 +24,17 @@ def transcribe(inputs, previous_transcription):
     try:
         sample_rate, audio_data = inputs
 
-        # Convert audio data to a NumPy array 
-        audio_data = np.frombuffer(audio_data, dtype=np.int16)
+        # Convert audio data to a NumPy array of floats normalized between -1 and 1
+        audio_data = np.frombuffer(audio_data, dtype=np.int16).astype(np.float32) / 32768.0
 
-        previous_transcription += pipe(audio_data, 
-                                       batch_size=BATCH_SIZE, 
-                                       generate_kwargs={"task": "transcribe"}, 
-                                       return_timestamps=True,
-                                       sampling_rate=sample_rate)["text"] 
+        # Perform transcription
+        transcription = pipe(audio_data, 
+                             batch_size=BATCH_SIZE, 
+                             generate_kwargs={"task": "transcribe"}, 
+                             return_timestamps=True)
+
+        # Append new transcription to previous transcription
+        previous_transcription += transcription["text"]
 
         return previous_transcription
     except Exception as e:
