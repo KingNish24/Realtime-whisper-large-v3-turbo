@@ -1,5 +1,5 @@
 ---
-title: Whisper Turbo
+title: Realtime Whisper Turbo
 emoji: 🤯
 colorFrom: indigo
 colorTo: red
@@ -9,6 +9,7 @@ app_file: app.py
 pinned: false
 tags:
 - whisper-event
+short_description: Realtime implementation of Whisper large turbo
 ---
 
 Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
