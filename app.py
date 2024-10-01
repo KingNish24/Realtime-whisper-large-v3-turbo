@@ -28,7 +28,7 @@ def transcribe(inputs, previous_transcription):
         sample_rate, audio_data = inputs
 
         # Save the Audio Data to the Temporary File
-        scipy.io.wavfile.write(filepath, sample_rate, audio_data)
+        scipy.io.wavfile.write(filename, sample_rate, audio_data)
 
         # Transcribe the Audio
         transcription = pipe(filepath, batch_size=BATCH_SIZE, generate_kwargs={"task": "transcribe"}, return_timestamps=False)["text"]
