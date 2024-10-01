@@ -8,7 +8,7 @@ import uuid
 import scipy.io.wavfile
 
 MODEL_NAME = "ylacombe/whisper-large-v3-turbo"
-BATCH_SIZE = 16  
+BATCH_SIZE = 32  
 device = 0 if torch.cuda.is_available() else "cpu"
 
 pipe = pipeline(
