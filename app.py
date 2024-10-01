@@ -41,7 +41,7 @@ def transcribe(inputs, previous_transcription):
 
 with gr.Blocks() as demo:
     with gr.Column():
-        gr.Markdown(f"# Realtime Whisper Large V3 Turbo: Transcribe Audio\n Transcribe Inputs in Realtime. This Demo uses the Checkpoint [{MODEL_NAME}](https://huggingface.co/{MODEL_NAME}) and 🤗 Transformers.")
+        gr.Markdown(f"# Realtime Whisper Large V3 Turbo: \n Transcribe Audio in Realtime. This Demo uses the Checkpoint [{MODEL_NAME}](https://huggingface.co/{MODEL_NAME}) and 🤗 Transformers.\n Note: The first token takes about 5 seconds. After that, it works flawlessly.")
         input_audio_microphone = gr.Audio(streaming=True)
         output = gr.Textbox(label="Transcription", value="")
 
