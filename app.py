@@ -4,6 +4,7 @@ import gradio as gr
 from transformers import pipeline
 import tempfile
 import os
+import uuid
 
 MODEL_NAME = "ylacombe/whisper-large-v3-turbo"
 BATCH_SIZE = 8
@@ -18,14 +19,30 @@ pipe = pipeline(
 
 @spaces.GPU
 def transcribe(inputs, previous_transcription):
-    previous_transcription += pipe(inputs[1], batch_size=BATCH_SIZE, generate_kwargs={"task": "transcribe"}, return_timestamps=True)["text"]
-    return previous_transcription
+    try:
+        # Generate a unique filename using UUID
+        filename = f"{uuid.uuid4().hex}.wav"
+        filepath = os.path.join(tempfile.gettempdir(), filename)
+
+        # Save the audio data to the temporary file
+        with open(filepath, "wb") as f:
+            f.write(inputs[1])
+
+        previous_transcription += pipe(filepath, batch_size=BATCH_SIZE, generate_kwargs={"task": "transcribe"}, return_timestamps=True)["text"]
+
+        # Remove the temporary file after transcription
+        os.remove(filepath)
+
+        return previous_transcription
+    except Exception as e:
+        print(f"Error during transcription: {e}")
+        return previous_transcription  # Return the current transcription if an error occurs
 
 with gr.Blocks() as demo:
     with gr.Column():
         input_audio_microphone = gr.Audio(streaming=True)
         output = gr.Textbox(label="Transcription", value="")
-        
-        input_audio_microphone.stream(transcribe, [input_audio_microphone, output], [output], time_limit=45, stream_every=3, concurrency_limit=None)
+
+        input_audio_microphone.stream(transcribe, [input_audio_microphone, output], [output], time_limit=45, stream_every=2, concurrency_limit=None)
 
 demo.queue().launch()
