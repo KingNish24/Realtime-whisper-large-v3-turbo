@@ -34,9 +34,6 @@ def transcribe(inputs, previous_transcription):
         transcription = pipe(filepath, batch_size=BATCH_SIZE, generate_kwargs={"task": "transcribe"}, return_timestamps=False)["text"]
         previous_transcription += transcription
 
-        # Remove the Temporary File after Transcription
-        os.remove(filepath)
-
         return previous_transcription
     except Exception as e:
         print(f"Error during Transcription: {e}")
