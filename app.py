@@ -41,7 +41,7 @@ def transcribe(inputs, previous_transcription):
         return previous_transcription
     except Exception as e:
         print(f"Error during Transcription: {e}")
-        return previous Transcription
+        return previous_transcription
 
 with gr.Blocks() as demo:
     with gr.Column():
