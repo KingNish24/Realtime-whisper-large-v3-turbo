@@ -6,6 +6,7 @@ import tempfile
 import os
 import uuid
 import scipy.io.wavfile
+import numpy as np
 
 MODEL_NAME = "ylacombe/whisper-large-v3-turbo"
 BATCH_SIZE = 8
@@ -21,20 +22,16 @@ pipe = pipeline(
 @spaces.GPU
 def transcribe(inputs, previous_transcription):
     try:
-        # Generate a unique filename using UUID
-        filename = f"{uuid.uuid4().hex}.wav"
-        filepath = os.path.join(tempfile.gettempdir(), filename)
-
-        # Extract sample rate and audio data from the tuple
         sample_rate, audio_data = inputs
 
-        # Save the audio data to the temporary file
-        scipy.io.wavfile.write(filepath, sample_rate, audio_data)
+        # Convert audio data to a NumPy array 
+        audio_data = np.frombuffer(audio_data, dtype=np.int16)
 
-        previous_transcription += pipe(filepath, batch_size=BATCH_SIZE, generate_kwargs={"task": "transcribe"}, return_timestamps=True)["text"]
-
-        # Remove the temporary file after transcription
-        os.remove(filepath)
+        previous_transcription += pipe(audio_data, 
+                                       batch_size=BATCH_SIZE, 
+                                       generate_kwargs={"task": "transcribe"}, 
+                                       return_timestamps=True,
+                                       sampling_rate=sample_rate)["text"] 
 
         return previous_transcription
     except Exception as e:
