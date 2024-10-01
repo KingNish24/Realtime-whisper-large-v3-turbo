@@ -27,7 +27,7 @@ def transcribe(inputs, previous_transcription):
 with gr.Blocks() as demo:
     with gr.Column():
         input_audio_microphone = gr.Audio(streaming=True)
-        output = gr.Textbox(label"Transcription")
+        output = gr.Textbox(label="Transcription")
         
         input_audio_microphone.stream(transcribe, [input_audio_microphone, output], [output], time_limit=15, stream_every=1, concurrency_limit=None)
 
