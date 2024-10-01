@@ -1,6 +1,6 @@
 ---
-title: Whisper Large V3
-emoji: 🤫
+title: Whisper Turbo
+emoji: 🤯
 colorFrom: indigo
 colorTo: red
 sdk: gradio
