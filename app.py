@@ -9,7 +9,7 @@ from transformers.pipelines.audio_utils import ffmpeg_read
 import tempfile
 import os
 
-MODEL_NAME = "ylacombe/tmp_whs"
+MODEL_NAME = "ylacombe/whisper-large-v3-turbo"
 BATCH_SIZE = 8
 FILE_LIMIT_MB = 1000
 YT_LENGTH_LIMIT_S = 3600  # limit to 1 hour YouTube files
@@ -99,7 +99,7 @@ mf_transcribe = gr.Interface(
         gr.Radio(["transcribe", "translate"], label="Task", value="transcribe"),
     ],
     outputs="text",
-    title="Whisper Large V3: Transcribe Audio",
+    title="Whisper Large V3 Turbo: Transcribe Audio",
     description=(
         "Transcribe long-form microphone or audio inputs with the click of a button! Demo uses the"
         f" checkpoint [{MODEL_NAME}](https://huggingface.co/{MODEL_NAME}) and 🤗 Transformers to transcribe audio files"
