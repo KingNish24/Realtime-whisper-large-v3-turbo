@@ -39,7 +39,7 @@ def transcribe(inputs, previous_transcription):
         return previous_transcription
     except Exception as e:
         print(f"Error during transcription: {e}")
-        return previous_transcription  # Return the current transcription if an error occurs
+        return previous_transcription  
 
 with gr.Blocks() as demo:
     with gr.Column():
@@ -47,6 +47,6 @@ with gr.Blocks() as demo:
         input_audio_microphone = gr.Audio(streaming=True)
         output = gr.Textbox(label="Transcription", value="")
 
-        input_audio_microphone.stream(transcribe, [input_audio_microphone, output], [output], time_limit=45, stream_every=1, concurrency_limit=None)
+        input_audio_microphone.stream(transcribe, [input_audio_microphone, output], [output], time_limit=45, stream_every=2, concurrency_limit=None)
 
 demo.queue().launch()
