@@ -7,13 +7,13 @@ import tempfile
 import os
 
 MODEL_NAME = "ylacombe/whisper-large-v3-turbo"
-BATCH_SIZE = 1
+BATCH_SIZE = 8
 device = 0 if torch.cuda.is_available() else "cpu"
 
 pipe = pipeline(
     task="automatic-speech-recognition",
     model=MODEL_NAME,
-    chunk_length_s=1,
+    chunk_length_s=30,
     device=device,
 )
 
@@ -27,6 +27,6 @@ with gr.Blocks() as demo:
         input_audio_microphone = gr.Audio(streaming=True)
         output = gr.Textbox(label="Transcription", value="")
         
-        input_audio_microphone.stream(transcribe, [input_audio_microphone, output], [output], time_limit=15, stream_every=1, concurrency_limit=None)
+        input_audio_microphone.stream(transcribe, [input_audio_microphone, output], [output], time_limit=45, stream_every=2, concurrency_limit=None)
 
 demo.queue().launch()
