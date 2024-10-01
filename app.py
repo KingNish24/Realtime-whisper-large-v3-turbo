@@ -23,7 +23,6 @@ def transcribe(inputs, previous_transcription):
     try:
         # Generate a unique filename Using UUID
         filename = f"{uuid.uuid4().hex}.wav"
-        filepath = os.path.join(tempfile.gettempdir(), filename)
 
         # Extract Sample Rate and Audio Data from the Tuple
         sample_rate, audio_data = inputs
@@ -32,7 +31,7 @@ def transcribe(inputs, previous_transcription):
         scipy.io.wavfile.write(filepath, sample_rate, audio_data)
 
         # Transcribe the Audio
-        transcription = pipe(filepath, batch_size=BATCH_SIZE, generate_kwargs={"task": "transcribe"}, return_timestamps=True)["text"]
+        transcription = pipe(filepath, batch_size=BATCH_SIZE, generate_kwargs={"task": "transcribe"}, return_timestamps=False)["text"]
         previous_transcription += transcription
 
         # Remove the Temporary File after Transcription
