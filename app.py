@@ -7,7 +7,7 @@ import tempfile
 import os
 
 MODEL_NAME = "ylacombe/whisper-large-v3-turbo"
-BATCH_SIZE = 32
+BATCH_SIZE = 1
 device = 0 if torch.cuda.is_available() else "cpu"
 
 pipe = pipeline(
