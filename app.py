@@ -10,7 +10,7 @@ from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor, WhisperTokeni
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 torch_dtype = torch.float16
-MODEL_NAME = "ylacombe/whisper-large-v3-turbo"
+MODEL_NAME = "openai/whisper-large-v3-turbo"
 
 model = AutoModelForSpeechSeq2Seq.from_pretrained(
     MODEL_NAME, torch_dtype=torch_dtype, low_cpu_mem_usage=True, use_safetensors=True
